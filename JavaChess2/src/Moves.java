@@ -76,18 +76,19 @@ public class Moves {
         //HVmoves(36); //HVmove validation
         //DMoves(36); //HVmove validation, place piece at row3 col4
         //timeExperiment(WP); //algorithm benchmarking
-        String list=posiblePW(history,WP,BP)/*+
-                posibleNW(WP,WN,WB,WR,WQ,WK,BP,BN,BB,BR,BQ,BK)+
-                posibleBW(WP,WN,WB,WR,WQ,WK,BP,BN,BB,BR,BQ,BK)+
-                posibleRW(WP,WN,WB,WR,WQ,WK,BP,BN,BB,BR,BQ,BK)+
-                posibleQW(WP,WN,WB,WR,WQ,WK,BP,BN,BB,BR,BQ,BK)+
-                posibleKW(WP,WN,WB,WR,WQ,WK,BP,BN,BB,BR,BQ,BK)*/;
+        String list=possibleWP(history,WP,BP)+
+                possibleN(OCCUPIED,WN)+
+                possibleB(OCCUPIED,WB)+
+                possibleR(OCCUPIED,WR)+
+                possibleQ(OCCUPIED,WQ)+
+                possibleK(OCCUPIED,WK);
+        unsafeForBlack(WP,WN,WB,WR,WQ,WK,BP,BN,BB,BR,BQ,BK);
         return list;
     }
-    public static String possibleWB(long OCCUPIED,long WB)
+    public static String possibleB(long OCCUPIED,long b)
     {
         String list="";
-        long i=WB&~(WB-1); //bitmask of first bishop position
+        long i=b&~(b-1); //bitmask of first bishop position
         long possibility;
         while(i!=0)
         {
@@ -102,15 +103,15 @@ public class Moves {
                 possibility&=~j; //remove current move from possible moves bitmap
                 j=possibility&~(possibility-1); //next move bitmap
             }
-            WB&=~i; //remove current bishop from bishop bitmap
-            i=WB&~(WB-1); //next bishop bitmap
+            b&=~i; //remove current bishop from bishop bitmap
+            i=b&~(b-1); //next bishop bitmap
         }
         return list;
     }
-    public static String possibleWR(long OCCUPIED,long WR)
+    public static String possibleR(long OCCUPIED,long r)
     {
         String list="";
-        long i=WR&~(WR-1); //bitmask of first rook position
+        long i=r&~(r-1); //bitmask of first rook position
         long possibility;
         while(i!=0)
         {
@@ -125,15 +126,15 @@ public class Moves {
                 possibility&=~j; //remove current move from possible moves bitmap
                 j=possibility&~(possibility-1); //next move bitmap
             }
-            WR&=~i; //remove current rook from rook bitmap
-            i=WR&~(WR-1); //next rook bitmap
+            r&=~i; //remove current rook from rook bitmap
+            i=r&~(r-1); //next rook bitmap
         }
         return list;
     }
-    public static String possibleWQ(long OCCUPIED,long WQ)
+    public static String possibleQ(long OCCUPIED,long q)
     {
         String list="";
-        long i=WQ&~(WQ-1); //bitmask of first queen position
+        long i=q&~(q-1); //bitmask of first queen position
         long possibility;
         while(i!=0)
         {
@@ -148,15 +149,15 @@ public class Moves {
                 possibility&=~j; //remove current move from possible moves bitmap
                 j=possibility&~(possibility-1); //next move bitmap
             }
-            WQ&=~i; //remove current queen from queen bitmap
-            i=WQ&~(WQ-1); //next queen bitmap
+            q&=~i; //remove current queen from queen bitmap
+            i=q&~(q-1); //next queen bitmap
         }
         return list;
     }
-    public static String possibleWN(long OCCUPIED,long WN)
+    public static String possibleN(long OCCUPIED,long n)
     {
         String list="";
-        long i=WN&~(WN-1); //bitmap of first white knight
+        long i=n&~(n-1); //bitmap of first white knight
         long possibility;
         while(i != 0)
         {
@@ -184,12 +185,41 @@ public class Moves {
                 possibility&=~j;
                 j=possibility&~(possibility-1);
             }
-            WN&=~i; //remove current white night from bitmap
-            i=WN&~(WN-1); //get next white night bitmap
+            n&=~i; //remove current white night from bitmap
+            i=n&~(n-1); //get next white night bitmap
         }
         return list;
     }
-    public static String posiblePW(String history,long WP,long BP) {
+    public static String possibleK(long OCCUPIED,long k)
+    {
+        String list="";
+        long possibility;
+        int iLocation=Long.numberOfTrailingZeros(k);
+        if (iLocation>9)
+        {
+            possibility=KING_SPAN<<(iLocation-9);
+        }
+        else {
+            possibility=KING_SPAN>>(9-iLocation);
+        }
+        if (iLocation%8<4)
+        {
+            possibility &=~FILE_GH&NOT_WHITE_PIECES;
+        }
+        else {
+            possibility &=~FILE_AB&NOT_WHITE_PIECES;
+        }
+        long j=possibility&~(possibility-1);
+        while (j != 0)
+        {
+            int index=Long.numberOfTrailingZeros(j);
+            list+=""+(iLocation/8)+(iLocation%8)+(index/8)+(index%8);
+            possibility&=~j;
+            j=possibility&~(possibility-1);
+        }
+        return list;
+    }
+    public static String possibleWP(String history,long WP,long BP) {
         String list="";
         //x1,y1,x2,y2
         long PAWN_MOVES=(WP>>7)&BLACK_PIECES&~RANK_8&~FILE_A;//capture right
@@ -279,6 +309,151 @@ public class Moves {
             }
         }
        return list;
+    }
+    public static long unsafeForWhite(long WP,long WN,long WB,long WR,long WQ,long WK,long BP,long BN,long BB,long BR,long BQ,long BK) {
+        long unsafe;
+        OCCUPIED=WP|WN|WB|WR|WQ|WK|BP|BN|BB|BR|BQ|BK;
+        //pawn
+        unsafe=((BP<<7)&~FILE_H);//pawn capture right
+        unsafe|=((BP<<9)&~FILE_A);//pawn capture left
+        long possibility;
+        //knight
+        long i=BN&~(BN-1);
+        while(i != 0)
+        {
+            int iLocation=Long.numberOfTrailingZeros(i);
+            if (iLocation>18)
+            {
+                possibility=KNIGHT_SPAN<<(iLocation-18);
+            }
+            else {
+                possibility=KNIGHT_SPAN>>(18-iLocation);
+            }
+            if (iLocation%8<4)
+            {
+                possibility &=~FILE_GH;
+            }
+            else {
+                possibility &=~FILE_AB;
+            }
+            unsafe |= possibility;
+            BN&=~i;
+            i=BN&~(BN-1);
+        }
+        //bishop/queen
+        long QB=BQ|BB;
+        i=QB&~(QB-1);
+        while(i != 0)
+        {
+            int iLocation=Long.numberOfTrailingZeros(i);
+            possibility=Dmoves(iLocation);
+            unsafe |= possibility;
+            QB&=~i;
+            i=QB&~(QB-1);
+        }
+        //rook/queen
+        long QR=BQ|BR;
+        i=QR&~(QR-1);
+        while(i != 0)
+        {
+            int iLocation=Long.numberOfTrailingZeros(i);
+            possibility=HVmoves(iLocation);
+            unsafe |= possibility;
+            QR&=~i;
+            i=QR&~(QR-1);
+        }
+        //king
+        int iLocation=Long.numberOfTrailingZeros(BK);
+        if (iLocation>9)
+        {
+            possibility=KING_SPAN<<(iLocation-9);
+        }
+        else {
+            possibility=KING_SPAN>>(9-iLocation);
+        }
+        if (iLocation%8<4)
+        {
+            possibility &=~FILE_GH;
+        }
+        else {
+            possibility &=~FILE_AB;
+        }
+        unsafe |= possibility;
+        return unsafe;
+    }
+    public static long unsafeForBlack(long WP,long WN,long WB,long WR,long WQ,long WK,long BP,long BN,long BB,long BR,long BQ,long BK)
+    {
+        long unsafe;
+        OCCUPIED=WP|WN|WB|WR|WQ|WK|BP|BN|BB|BR|BQ|BK;
+        //pawn
+        unsafe=((WP>>>7)&~FILE_A);//pawn capture right
+        unsafe|=((WP>>>9)&~FILE_H);//pawn capture left
+        long possibility;
+        //knight
+        long i=WN&~(WN-1);
+        while(i != 0)
+        {
+            int iLocation=Long.numberOfTrailingZeros(i);
+            if (iLocation>18)
+            {
+                possibility=KNIGHT_SPAN<<(iLocation-18);
+            }
+            else {
+                possibility=KNIGHT_SPAN>>(18-iLocation);
+            }
+            if (iLocation%8<4)
+            {
+                possibility &=~FILE_GH;
+            }
+            else {
+                possibility &=~FILE_AB;
+            }
+            unsafe |= possibility;
+            WN&=~i;
+            i=WN&~(WN-1);
+        }
+        //bishop/queen
+        long QB=WQ|WB;
+        i=QB&~(QB-1);
+        while(i != 0)
+        {
+            int iLocation=Long.numberOfTrailingZeros(i);
+            possibility=Dmoves(iLocation);
+            unsafe |= possibility;
+            QB&=~i;
+            i=QB&~(QB-1);
+        }
+        //rook/queen
+        long QR=WQ|WR;
+        i=QR&~(QR-1);
+        while(i != 0)
+        {
+            int iLocation=Long.numberOfTrailingZeros(i);
+            possibility=HVmoves(iLocation);
+            unsafe |= possibility;
+            QR&=~i;
+            i=QR&~(QR-1);
+        }
+        //king
+        int iLocation=Long.numberOfTrailingZeros(WK);
+        if (iLocation>9)
+        {
+            possibility=KING_SPAN<<(iLocation-9);
+        }
+        else {
+            possibility=KING_SPAN>>(9-iLocation);
+        }
+        if (iLocation%8<4)
+        {
+            possibility &=~FILE_GH;
+        }
+        else {
+            possibility &=~FILE_AB;
+        }
+        unsafe |= possibility;
+        System.out.println();
+        drawBitboard(unsafe);
+        return unsafe;
     }
     public static void timeExperiment(long WP) {
         int loopLength=1000;
