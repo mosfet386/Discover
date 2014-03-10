@@ -27,11 +27,15 @@ public class JavaChess2 extends JPanel {
 	static double squareSize=64; //Board square size
 	static JFrame gameFrame = new JFrame("JavaChess2");
 	static JavaChess2 gameUI = new JavaChess2(); //Static allows repaint calls outside of JavaChess2 Class
-	static long WP=0L,WN=0L,WB=0L,WR=0L,WQ=0L,WK=0L,   
-				BP=0L,BN=0L,BB=0L,BR=0L,BQ=0L,BK=0L;
+	static boolean CWK=true,CWQ=true,CBK=true,CBQ=true,WhiteToMove=true;;//true=castle is possible
+    static boolean UniCWK=true,UniCWQ=true,UniCBK=true,UniCBQ=true;//true=castle is possible
+    static long WP=0L,WN=0L,WB=0L,WR=0L,WQ=0L,WK=0L,   
+				BP=0L,BN=0L,BB=0L,BR=0L,BQ=0L,BK=0L,
+				EP=0L;
 	static long UniWP=0L,UniWN=0L,UniWB=0L,UniWR=0L,UniWQ=0L,UniWK=0L,   
-			UniBP=0L,UniBN=0L,UniBB=0L,UniBR=0L,UniBQ=0L,UniBK=0L;
-
+			UniBP=0L,UniBN=0L,UniBB=0L,UniBR=0L,UniBQ=0L,UniBK=0L,
+			UniEP=0L;
+	
 	public static void main(String[] args) {
 		gameFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //enable window close button
 		gameFrame.add(gameUI); //attach JavaChess2's panels to frame
@@ -40,20 +44,25 @@ public class JavaChess2 extends JPanel {
 				(Toolkit.getDefaultToolkit().getScreenSize().height-gameFrame.getHeight())/2);
 		gameFrame.setVisible(true);
 		newGame();
-		gameFrame.repaint();
-		try {
-			testframework.test();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+        gameFrame.repaint();
+//		try {
+//			testframework.test();
+//		} catch (Exception e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 	}
 	public static void newGame() {
 		
-		BoardCreation.initiateStandardChess();
-		BoardCreation.drawArray(WP,WN,WB,WR,WQ,WK,BP,BN,BB,BR,BQ,BK);
-		Moves.possibleMovesW("1636",WP,WN,WB,WR,WQ,WK,BP,BN,BB,BR,BQ,BK);
 		//BoardCreation.initiateChess960();
+		BoardCreation.initiateStandardChess();
+        CWK=true; CWQ=true; CBK=true; CBQ=true;
+        EP=0;
+        BoardCreation.drawArray(WP,WN,WB,WR,WQ,WK,BP,BN,BB,BR,BQ,BK);
+        PerformanceTest.perft(WP,WN,WB,WR,WQ,WK,BP,BN,BB,BR,BQ,BK,EP,CWK,CWQ,CBK,CBQ,WhiteToMove,0);
+        System.out.print(PerformanceTest.perftMoveCounter);
+		//Moves.possibleMovesW(WP,WN,WB,WR,WQ,WK,BP,BN,BB,BR,BQ,BK,EP,CWK,CWQ,CBK,CBQ);
+		
 	}
 	@Override
 	public void paintComponent(Graphics gameGraphics) {

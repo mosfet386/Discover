@@ -1,3 +1,10 @@
+/*
+Three board representations
+1: Indexed 0-63, beginning with upper right corner
+2: Row[a-h] & Column[0-7]
+3: Bitwise bitboard, 64 binary bits, xxxx...x
+*/
+
 import java.util.Arrays;
 
 
