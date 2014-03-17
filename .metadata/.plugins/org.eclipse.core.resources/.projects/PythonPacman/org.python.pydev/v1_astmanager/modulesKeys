@@ -1,0 +1,15 @@
+MODULES_MANAGER_V2
+eightpuzzle|/home/mosfet386/git/Mosfet386Repo2/PythonPacman/eightpuzzle.py
+game|/home/mosfet386/git/Mosfet386Repo2/PythonPacman/game.py
+ghostAgents|/home/mosfet386/git/Mosfet386Repo2/PythonPacman/ghostAgents.py
+graphicsDisplay|/home/mosfet386/git/Mosfet386Repo2/PythonPacman/graphicsDisplay.py
+graphicsUtils|/home/mosfet386/git/Mosfet386Repo2/PythonPacman/graphicsUtils.py
+keyboardAgents|/home/mosfet386/git/Mosfet386Repo2/PythonPacman/keyboardAgents.py
+layout|/home/mosfet386/git/Mosfet386Repo2/PythonPacman/layout.py
+pacman|/home/mosfet386/git/Mosfet386Repo2/PythonPacman/pacman.py
+pacmanAgents|/home/mosfet386/git/Mosfet386Repo2/PythonPacman/pacmanAgents.py
+search|/home/mosfet386/git/Mosfet386Repo2/PythonPacman/search.py
+searchAgents|/home/mosfet386/git/Mosfet386Repo2/PythonPacman/searchAgents.py
+searchAgents.old|/home/mosfet386/git/Mosfet386Repo2/PythonPacman/searchAgents.old.py
+textDisplay|/home/mosfet386/git/Mosfet386Repo2/PythonPacman/textDisplay.py
+util|/home/mosfet386/git/Mosfet386Repo2/PythonPacman/util.py

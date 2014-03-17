@@ -1,0 +1,44 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
+import java.net.UnknownHostException;
+import java.util.Scanner;
+
+  
+public class Client {
+
+	public static void main(String[] args) throws UnknownHostException, IOException, ClassNotFoundException {
+		Integer x=null, y=null;
+		if(args.length==2){
+			x=Integer.decode(args[0]);
+			y=Integer.decode(args[1]);
+		} else {
+			System.out.println("Usage: Must provide two integer values");
+			System.exit(0);
+		}
+		Socket socketToServer = new Socket("127.0.0.1",Server.PORT);
+		System.out.println("Client now connected to server!...");
+		
+		ObjectOutputStream clientOutputObject = new ObjectOutputStream(socketToServer.getOutputStream());
+		System.out.println("Output stream created...");
+		ObjectInputStream clientInputObject = new ObjectInputStream(socketToServer.getInputStream());
+		System.out.println("Input stream created...");
+		
+		Scanner ascanner = new Scanner(System.in);
+		x=ascanner.nextInt();
+		y=ascanner.nextInt();
+		Message clientPassObject = new Message(x,y);
+		clientOutputObject.writeObject(clientPassObject);
+		System.out.println("Message passed...");
+		
+		Message clientReturnedObject = (Message)clientInputObject.readObject();
+		System.out.println("Object returned...");
+		System.out.println(clientReturnedObject.getResult());
+		socketToServer.close();
+	}
+
+}

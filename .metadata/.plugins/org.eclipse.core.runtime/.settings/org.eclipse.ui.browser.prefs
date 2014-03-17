@@ -1,0 +1,3 @@
+browsers=<?xml version\="1.0" encoding\="UTF-8"?>\n<web-browsers current\="0">\n<system/>\n<external location\="/usr/bin/firefox" name\="Firefox"/>\n</web-browsers>
+eclipse.preferences.version=1
+internalWebBrowserHistory=http\://download.oracle.com/javase/7/docs/api/java/util/ArrayList.html\#ArrayList()|*|http\://download.oracle.com/javase/7/docs/api/java/util/List.html|*|http\://download.oracle.com/javase/7/docs/api/java/awt/event/ActionListener.html|*|http\://download.oracle.com/javase/7/docs/api/java/net/ServerSocket.html\#ServerSocket(int)|*|http\://download.oracle.com/javase/7/docs/api/java/applet/AudioClip.html|*|

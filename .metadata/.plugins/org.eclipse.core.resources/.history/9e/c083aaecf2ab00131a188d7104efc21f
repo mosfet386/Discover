@@ -1,0 +1,82 @@
+import java.awt.BorderLayout;
+import java.awt.EventQueue;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.border.EmptyBorder;
+import javax.swing.JTextField;
+import javax.swing.JLabel;
+
+
+public class Login extends JFrame {
+
+	private JPanel contentPane;
+	private JTextField txtName;
+	private JTextField textField;
+	private JLabel lblIpAddress;
+	private JLabel lblPort;
+	private JTextField textField_1;
+	private JLabel lbleg;
+	
+	public Login() {
+		try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (ClassNotFoundException | InstantiationException
+				| IllegalAccessException | UnsupportedLookAndFeelException e) {
+			e.printStackTrace();
+		}
+		
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 332, 452);
+		setLocationRelativeTo(null);
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setContentPane(contentPane);
+		contentPane.setLayout(null);
+		
+		txtName = new JTextField();
+		txtName.setBounds(64, 78, 138, 19);
+		contentPane.add(txtName);
+		txtName.setColumns(10);
+		
+		JLabel lblName = new JLabel("Name:");
+		lblName.setBounds(64, 51, 70, 15);
+		contentPane.add(lblName);
+		
+		textField = new JTextField();
+		textField.setBounds(64, 163, 138, 19);
+		contentPane.add(textField);
+		textField.setColumns(10);
+		
+		lblIpAddress = new JLabel("IP Address:");
+		lblIpAddress.setBounds(64, 136, 114, 15);
+		contentPane.add(lblIpAddress);
+		
+		lblPort = new JLabel("Port:");
+		lblPort.setBounds(64, 229, 114, 15);
+		contentPane.add(lblPort);
+		
+		textField_1 = new JTextField();
+		textField_1.setColumns(10);
+		textField_1.setBounds(64, 256, 138, 19);
+		contentPane.add(textField_1);
+		
+		lbleg = new JLabel("(eg. 192.168.0.2)");
+		lbleg.setBounds(64, 182, 138, 19);
+		contentPane.add(lbleg);
+	}
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					Login frame = new Login();
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+}
