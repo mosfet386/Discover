@@ -1,0 +1,91 @@
+package checkmate.game;
+
+import java.awt.BorderLayout;
+import java.awt.Canvas;
+import java.awt.Dimension;
+
+import javax.swing.JFrame;
+
+public class Game extends Canvas implements Runnable{
+
+	private static final long serialVersionUID = 1L;
+	public static final int WIDTH=160;
+	public static final int HEIGHT=WIDTH*(12/9);
+	public static final int SCALE=3;
+	public static final String NAME="Game";
+	
+	private JFrame frame;
+	
+	public boolean running=false;
+	public int tickcount=0;
+	
+	public Game(){
+		setMinimumSize(new Dimension(WIDTH*SCALE,HEIGHT*SCALE));
+		setMinimumSize(new Dimension(WIDTH*SCALE,HEIGHT*SCALE));
+		setMaximumSize(new Dimension(WIDTH*SCALE,HEIGHT*SCALE));
+		setPreferredSize(new Dimension(WIDTH*SCALE,HEIGHT*SCALE));
+		frame=new JFrame(NAME);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setLayout(new BorderLayout());
+		frame.add(this,BorderLayout.CENTER); //add this canvas
+		frame.pack(); //no smaller than preferred size
+		frame.setLocationRelativeTo(null);
+		frame.setVisible(true);
+	}
+	public void tick(){ //update game logic
+		
+	}
+	public void render(){ //present logic
+		
+	}
+	@Override
+	public void run(){
+		long lastTimeNS=System.nanoTime();
+		double nsPerTick=1000000000D/60D; //time between game ticks
+		int ticks=0;
+		int frames=0;
+		long lastTimeMS=System.currentTimeMillis();
+		double ticksToProcess=0;
+		double framesPerS=500;
+		long msPerFrame=(long)(1000/framesPerS);
+		
+		while(running){
+			long nowTimeNS=System.nanoTime();
+			//number of ticks to process -> elapsedNS*ticksPerNS
+			ticksToProcess+=(nowTimeNS-lastTimeNS)/nsPerTick; 
+			lastTimeNS=nowTimeNS;
+			boolean shouldRender=true;
+			while(ticksToProcess>=1){
+				ticks++;
+				tick();
+				ticksToProcess-=1;
+				shouldRender=true;
+			} //completes approximately after nsPerTick for fast tick()
+			try {Thread.sleep(msPerFrame);}catch(InterruptedException e){e.printStackTrace();}
+			//process approximately framesPerS
+			if(shouldRender){
+				frames++;
+				render();
+			}
+			//Print framesPerS & TicksPerS
+			if(System.currentTimeMillis()-lastTimeMS>=1000){
+				lastTimeMS+=1000;
+				System.out.println("ticks="+ticks+" frames="+frames+" sPerFrame="+msPerFrame);
+				frames=0;
+				ticks=0;
+			}
+		}
+	}
+	public synchronized void start(){
+		running=true;
+		new Thread(this,"Game Main").start();
+	}
+	public synchronized void stop(){
+		running=false;
+	}
+	public static void main(String arg[]){
+		new Game().start();
+	}
+
+
+}
